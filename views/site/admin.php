@@ -61,17 +61,18 @@
 </style>
 
 <form action="/site/admin" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+    <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+
     <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
+    <input type="text" id="title" name="AdminForm[title]" required>
     <br>
 
     <label for="description">Description:</label>
-    <textarea id="description" name="description" required></textarea>
+    <textarea id="description" name="AdminForm[description]" required></textarea>
     <br>
 
     <label for="type">Type:</label>
-    <select id="type" name="type" required>
+    <select id="type" name="AdminForm[type]" required>
         <option value="upper">Upper</option>
         <option value="middle">Middle</option>
         <option value="lower">Lower</option>
@@ -79,16 +80,16 @@
     <br>
 
     <label for="date">Date:</label>
-    <input type="date" id="date" name="date" required>
+    <input type="date" id="date" name="AdminForm[date]" required>
     <br>
 
     <label for="location">Location:</label>
-    <input type="text" id="location" name="location" required>
+    <input type="text" id="location" name="AdminForm[location]" required>
     <br>
 
     <label for="image">Upload Image or Enter URL:</label>
-    <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="previewImage(event)">
-    <input type="url" id="image-url" name="image-url" placeholder="Enter image URL" oninput="previewImageFromUrl(event)">
+    <input type="file" id="image-upload" name="AdminForm[imageFile]" accept="image/*" onchange="previewImage(event)">
+    <input type="url" id="image-url" name="AdminForm[imageUrl]" placeholder="Enter image URL" oninput="previewImageFromUrl(event)">
     <img id="image-preview" alt="Image Preview">
     <br>
 

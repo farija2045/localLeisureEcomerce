@@ -70,31 +70,49 @@ class SiteController extends Controller
    // {
        // return $this->render('admin');
    // }
-   
-    
-    public function actionAdmin()
-    {
-        $model = new AdminForm();
-    
-        if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
-            $model->imageFile = UploadedFile::getInstance($model, 'image');
-            // Debugging: Check if form data is loaded
-           var_dump($model->attributes);
-           die();
-    
-            if ($model->validate() && $model->save()) {
-                Yii::$app->session->setFlash('success', 'Form submitted successfully!');
-                return $this->refresh();
-            } else {
-                Yii::$app->session->setFlash('error', 'Failed to submit the form.');
+// filepath: c:\xampp\htdocs\basic\controllers\SiteController.php
+public function actionAdmin()
+{
+    $model = new \app\models\AdminForm();
+
+    if (Yii::$app->request->isPost) {
+        // Load form data into the model
+        $model->load(Yii::$app->request->post());
+
+        // Handle file upload
+        $model->imageFile = \yii\web\UploadedFile::getInstance($model, 'imageFile');
+
+        if ($model->validate()) {
+            $filePath = null;
+
+            // Save uploaded file if provided
+            if ($model->imageFile) {
+                $filePath = 'uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension;
+                $model->imageFile->saveAs($filePath);
+                $model->imageUrl = $filePath; // Use the file path if no URL is provided
             }
+
+            // Save data to the database
+            Yii::$app->postDb->createCommand()->insert('admin_entries', [
+                'title' => $model->title,
+                'description' => $model->description,
+                'type' => $model->type,
+                'date' => $model->date,
+                'location' => $model->location,
+                'image' => $model->imageUrl, // Save either the file path or the URL
+            ])->execute();
+
+            Yii::$app->session->setFlash('success', 'Data saved successfully.');
+            return $this->redirect(['site/admin']);
         }
-    
-        return $this->render('admin', [
-            'model' => $model,
-        ]);
     }
+
+    return $this->render('admin', [
+        'model' => $model,
+    ]);
+}
+    
+   
     /**
      * Login action.
      *
