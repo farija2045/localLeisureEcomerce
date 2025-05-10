@@ -1,5 +1,3 @@
-
-
 main > .container {
     padding: 70px 15px 20px;
 }
@@ -88,3 +86,60 @@ a.desc:after {
 .form-group {
     margin-bottom: 1rem;
 }
+
+/* Container for all entries */
+.entries-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Individual entry card */
+.entry-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+}
+
+/* Hover effect for entry card */
+.entry-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Image styling */
+.entry-image img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Details section */
+.entry-details {
+    padding: 15px;
+    text-align: center;
+    color: #333;
+}
+
+.entry-details h3 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.entry-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+

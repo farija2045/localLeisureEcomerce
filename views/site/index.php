@@ -14,6 +14,13 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
         <p><a class="btn btn-lg btn-light" href="https://www.google.com/maps/search/leisure+areas+near+me" target="_blank">Find Nearby Leisure Areas</a></p>
     </div>
 
+    <!-- Include admin-entries content -->
+    <div>
+        <?= $this->render('admin-entries', [
+            'entries' => \app\models\AdminEntry::find()->all(), // Fetch entries directly
+        ]) ?>
+    </div>
+
     <div class="body-content">
 
         <div class="row text-center">

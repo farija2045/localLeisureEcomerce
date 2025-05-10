@@ -134,7 +134,20 @@ public function actionAdmin()
             'model' => $model,
         ]);
     }
+     public function actionAdminEntries()
+     {
+        // fetch all records from the admin_entries table
+        $entries =\app\models\AdminEntry::find()->all();
+        // pass the records from the admin_entries table
+        var_dump($entries);
+        die();
+        return $this->render('index', [
+            'entries' => $entries,
+        ]);
+        
+     }
 
+ 
     /**
      * Logout action.
      *

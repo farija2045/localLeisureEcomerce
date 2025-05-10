@@ -54,6 +54,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 // Add custom URL rules here if needed
+                'admin-entries' => 'site/admin-entries',
             ],
         ],
     ],
