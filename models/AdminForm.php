@@ -13,12 +13,10 @@ class AdminForm extends Model
     public $type;
     public $date;
     public $location;
-    public $imageFile; // For file uploads
-    public $imageUrl;  // For image URLs
+    public $imageFile;
+    public $imagePath;
+    public $imageUrl;
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -26,43 +24,47 @@ class AdminForm extends Model
             [['description'], 'string'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
             [['title', 'type', 'location'], 'string', 'max' => 255],
-            [['imageFile'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2], // 2MB max
-            [['imageUrl'], 'url'], // Validate the URL format
+            [['imageFile'], 'image', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2],
+            [['imageUrl'], 'url'],
         ];
     }
 
-    /**
-     * Save the form data to the database and handle the image upload or URL.
-     */
     public function save()
     {
         if ($this->validate()) {
-            $filePath = null;
+            // Create uploads directory if not exists
+            $uploadDir = Yii::getAlias('@webroot') . DIRECTORY_SEPARATOR . 'uploads';
+            
+            }
 
             // Handle file upload
-            if ($this->imageFile) {
-                $filePath = 'uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension;
-                $this->imageFile->saveAs($filePath);
+            if ($this->imageFile instanceof UploadedFile) {
+                $uniqueName = uniqid('img_') . '.' . $this->imageFile->extension;
+                $relativePath = 'uploads/' . DIRECTORY_SEPARATOR . $uniqueName;
+                $fullPath = $uploadDir . DIRECTORY_SEPARATOR . $uniqueName;
+
+                if ($this->imageFile->saveAs($fullPath)) {
+                    $this->imagePath = str_replace('\\', '/', $relativePath);
+                    Yii::$app->session->setFlash('success', 'File uploaded successfully.');
+                } else {
+                    Yii::$app->session->setFlash('error', 'File upload failed!');
+                    return false;
+                }
             }
 
-            // Use the URL if provided
-            if (!empty($this->imageUrl)) {
-                $filePath = $this->imageUrl; // URL takes precedence over file upload
-            }
-
-            // Save the data to the database
+            // Insert into DB
             Yii::$app->db->createCommand()->insert('admin_entries', [
                 'title' => $this->title,
                 'description' => $this->description,
                 'type' => $this->type,
                 'date' => $this->date,
                 'location' => $this->location,
-                'image' => $filePath, // Store either the file path or the URL
+                'image_path' => $this->imagePath ?? null,
+                'image_url' => $this->imageUrl ?? null,
             ])->execute();
 
             return true;
         }
 
-        return false;
     }
-}
+

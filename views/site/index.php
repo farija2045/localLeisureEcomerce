@@ -11,7 +11,7 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
 
         <p class="lead">Discover exciting leisure spots and activities near you!</p>
 
-        <p><a class="btn btn-lg btn-light" href="https://www.google.com/maps/search/leisure+areas+near+me" target="_blank">Find Nearby Leisure Areas</a></p>
+        <p><a class="btn btn-lg btn-light" href="https://www.google.com/maps/search/leisure+areas+near+me" target="_blank">Find  Leisure Areas</a></p>
     </div>
 
     <!-- Include admin-entries content -->
@@ -38,13 +38,13 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
 
                 <p><a class="btn btn-outline-primary" href="#">Discover More &raquo;</a></p>
             </div>
-            <div class="col-lg-4">
+            <!-- <div class="col-lg-4">
                 <h2 class="text-primary">Upcoming Events</h2>
 
                 <p>Stay updated with the latest events happening in your area and never miss out on the fun!</p>
 
                 <p><a class="btn btn-outline-primary" href="#">View Events &raquo;</a></p>
-            </div>
+            </div> -->
         </div>
 
     </div>

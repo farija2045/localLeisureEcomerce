@@ -47,11 +47,11 @@ class AdminEntry extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location', 'image'], 'default', 'value' => null],
+            [['location', 'image_path','image_url'], 'default', 'value' => null],
             [['title', 'description', 'type', 'date'], 'required'],
             [['description', 'type'], 'string'],
             [['date'], 'safe'],
-            [['title', 'location', 'image'], 'string', 'max' => 255],
+            [['title', 'location', 'image_path','image_url'], 'string', 'max' => 255],
             ['type', 'in', 'range' => array_keys(self::optsType())],
         ];
     }
@@ -68,7 +68,8 @@ class AdminEntry extends \yii\db\ActiveRecord
             'type' => 'Type',
             'date' => 'Date',
             'location' => 'Location',
-            'image' => 'Image',
+            'image_path' => 'Image_Path',
+            'image_url' => 'Image URL',
         ];
     }
 

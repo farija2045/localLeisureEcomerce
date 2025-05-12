@@ -11,7 +11,8 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\web\UploadedFile;
 use app\models\AdminForm;
-
+// Set alias at the beginning of the controller
+Yii::setAlias('@uploads', Yii::getAlias('@webroot/uploads'));
 class SiteController extends Controller
 {
     /**
@@ -83,13 +84,22 @@ public function actionAdmin()
         $model->imageFile = \yii\web\UploadedFile::getInstance($model, 'imageFile');
 
         if ($model->validate()) {
-            $filePath = null;
+            // Ensure uploads directory exists
+            $uploadDir = Yii::getAlias('@uploads');
+            
+
+            // Define the correct file path
+            $filePath = $uploadDir .'/'. $model->imageFile->baseName . '.' . $model->imageFile->extension;
 
             // Save uploaded file if provided
             if ($model->imageFile) {
-                $filePath = 'uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension;
-                $model->imageFile->saveAs($filePath);
-                $model->imageUrl = $filePath; // Use the file path if no URL is provided
+                if ($model->imageFile->saveAs($filePath)) {
+                    // Store the correct file path (relative for web use)
+                    $model->imagePath =str_replace(Yii::getAlias('@webroot/'),'',$filePath);
+                } else {
+                    Yii::$app->session->setFlash('error', 'File upload failed!');
+                return false;
+                }
             }
 
             // Save data to the database
@@ -99,7 +109,9 @@ public function actionAdmin()
                 'type' => $model->type,
                 'date' => $model->date,
                 'location' => $model->location,
-                'image' => $model->imageUrl, // Save either the file path or the URL
+                'image_path' => $model->imagePath, // Store the file path
+                'image_url' => $model->imageUrl,   // Store the URL provided in the form
+
             ])->execute();
 
             Yii::$app->session->setFlash('success', 'Data saved successfully.');
@@ -107,9 +119,7 @@ public function actionAdmin()
         }
     }
 
-    return $this->render('admin', [
-        'model' => $model,
-    ]);
+    return $this->render('admin', ['model' => $model]); // Ensure the form renders if validation fails
 }
     
    
@@ -139,8 +149,7 @@ public function actionAdmin()
         // fetch all records from the admin_entries table
         $entries =\app\models\AdminEntry::find()->all();
         // pass the records from the admin_entries table
-        var_dump($entries);
-        die();
+    
         return $this->render('index', [
             'entries' => $entries,
         ]);

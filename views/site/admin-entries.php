@@ -7,14 +7,14 @@
 $this->title = 'Admin Entries';
 ?>
 
-<h1>Admin Entries</h1>
+
 
 <?php if (!empty($entries)): ?>
     <div class="entries-container">
         <?php foreach ($entries as $entry): ?>
-            <a href="<?= htmlspecialchars($entry->image) ?>" target="_blank" class="entry-card">
+            <a href="<?= htmlspecialchars($entry->image_url) ?>" target="_blank" class="entry-card">
                 <div class="entry-image">
-                    <img src="<?= htmlspecialchars($entry->image) ?>" alt="Entry Image">
+                    <img src="<?= htmlspecialchars($entry->image_path) ?>" alt="Entry Image">
                 </div>
                 <div class="entry-details">
                     <h3><?= htmlspecialchars($entry->title) ?></h3>
