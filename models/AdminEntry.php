@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "admin_entries".
@@ -13,17 +14,24 @@ use Yii;
  * @property string $type
  * @property string $date
  * @property string|null $location
- * @property string|null $image
+ * @property string|null $image_path
+ * @property string|null $image_url
+ * @property UploadedFile[] $images Array to store multiple uploaded files
+ * @property EntryImages[] $relatedImages Relation to the entry_images table
  */
 class AdminEntry extends \yii\db\ActiveRecord
 {
-
     /**
      * ENUM field values
      */
     const TYPE_UPPER = 'upper';
     const TYPE_MIDDLE = 'middle';
     const TYPE_LOWER = 'lower';
+
+    /**
+     * @var UploadedFile[] Array to store multiple uploaded files
+     */
+    public $images;
 
     /**
      * {@inheritdoc}
@@ -47,12 +55,13 @@ class AdminEntry extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location', 'image_path','image_url'], 'default', 'value' => null],
+            [['location', 'image_path', 'image_url'], 'default', 'value' => null],
             [['title', 'description', 'type', 'date'], 'required'],
             [['description', 'type'], 'string'],
             [['date'], 'safe'],
-            [['title', 'location', 'image_path','image_url'], 'string', 'max' => 255],
+            [['title', 'location', 'image_path', 'image_url'], 'string', 'max' => 255],
             ['type', 'in', 'range' => array_keys(self::optsType())],
+            [['images'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxFiles' => 10], // Allow up to 10 files
         ];
     }
 
@@ -68,11 +77,11 @@ class AdminEntry extends \yii\db\ActiveRecord
             'type' => 'Type',
             'date' => 'Date',
             'location' => 'Location',
-            'image_path' => 'Image_Path',
+            'image_path' => 'Image Path',
             'image_url' => 'Image URL',
+            'images' => 'Images',
         ];
     }
-
 
     /**
      * column type ENUM value labels
@@ -132,5 +141,14 @@ class AdminEntry extends \yii\db\ActiveRecord
     public function setTypeToLower()
     {
         $this->type = self::TYPE_LOWER;
+    }
+
+    /**
+     * Relation to the entry_images table
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRelatedImages()
+    {
+        return $this->hasMany(EntryImages::class, ['entry_id' => 'id']);
     }
 }

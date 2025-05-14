@@ -3,20 +3,18 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
-class User extends ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    
+    /**
+     * {@inheritdoc}
+     */
     public static function tableName()
     {
         return 'user'; 
     }
+
     /**
      * {@inheritdoc}
      */
@@ -42,6 +40,17 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username]);
+    }
+
+    /**
+     * Finds user by email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
     }
 
     /**
@@ -77,5 +86,43 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return \Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Sets a hashed password
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates a new auth key
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = \Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * Checks if the user is an admin
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Checks if the user is a regular user
+     *
+     * @return bool
+     */
+    public function isUser()
+    {
+        return $this->role === 'user';
     }
 }

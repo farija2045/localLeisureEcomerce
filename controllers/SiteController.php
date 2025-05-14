@@ -7,12 +7,12 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 use yii\web\UploadedFile;
-use app\models\AdminForm;
-// Set alias at the beginning of the controller
+use app\models\AdminEntry;
+use app\models\EntryImages;
+
 Yii::setAlias('@uploads', Yii::getAlias('@webroot/uploads'));
+
 class SiteController extends Controller
 {
     /**
@@ -67,96 +67,103 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-   // public function actionAdmin()
-   // {
-       // return $this->render('admin');
-   // }
-// filepath: c:\xampp\htdocs\basic\controllers\SiteController.php
-public function actionAdmin()
-{
-    $model = new \app\models\AdminForm();
-
-    if (Yii::$app->request->isPost) {
-        // Load form data into the model
-        $model->load(Yii::$app->request->post());
-
-        // Handle file upload
-        $model->imageFile = \yii\web\UploadedFile::getInstance($model, 'imageFile');
-
-        if ($model->validate()) {
-            // Ensure uploads directory exists
-            $uploadDir = Yii::getAlias('@uploads');
-            
-
-            // Define the correct file path
-            $filePath = $uploadDir .'/'. $model->imageFile->baseName . '.' . $model->imageFile->extension;
-
-            // Save uploaded file if provided
-            if ($model->imageFile) {
-                if ($model->imageFile->saveAs($filePath)) {
-                    // Store the correct file path (relative for web use)
-                    $model->imagePath =str_replace(Yii::getAlias('@webroot/'),'',$filePath);
-                } else {
-                    Yii::$app->session->setFlash('error', 'File upload failed!');
-                return false;
+    /**
+     * Admin action to handle multiple image uploads.
+     */
+        
+    public function actionAdmin()
+    {
+        $model = new AdminEntry();
+    
+        if (Yii::$app->request->isPost) {
+            // Load form data into the model
+            $model->load(Yii::$app->request->post());
+    
+            // Handle multiple file uploads
+            $model->images = UploadedFile::getInstances($model, 'images');
+    
+            if ($model->validate()) {
+                // Save the main entry
+                if ($model->save()) {
+                    $uploadDir = Yii::getAlias('@uploads');
+                    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+                        Yii::$app->session->setFlash('error', 'Failed to create uploads directory.');
+                        return $this->redirect(['site/admin']);
+                    }
+    
+                    foreach ($model->images as $image) {
+                        // Generate a unique file name for each image
+                        $uniqueFileName = uniqid() . '.' . $image->extension;
+                        $filePath = $uploadDir . '/' . $uniqueFileName;
+    
+                        if ($image->saveAs($filePath)) {
+                            // Save the image record in the entry_images table
+                            $entryImage = new EntryImages();
+                            $entryImage->entry_id = $model->id; // Link to the main entry
+                            $entryImage->image_path = str_replace(Yii::getAlias('@webroot/'), '', $filePath);
+                            $entryImage->image_url = Yii::getAlias('@web') . '/' . $entryImage->image_path; // Save the full URL
+                            $entryImage->save();
+                        }
+                    }
+    
+                    // Save the first image path in the admin_entries table as the thumbnail
+                    $firstImage = EntryImages::find()->where(['entry_id' => $model->id])->one();
+                    if ($firstImage) {
+                        $model->image_path = $firstImage->image_path; // Save the first image as the thumbnail
+                        $model->save(false); // Save without validation
+                    }
+    
+                    Yii::$app->session->setFlash('success', 'Entry and images uploaded successfully.');
+                    return $this->redirect(['site/admin-entries']);
                 }
             }
-
-            // Save data to the database
-            Yii::$app->postDb->createCommand()->insert('admin_entries', [
-                'title' => $model->title,
-                'description' => $model->description,
-                'type' => $model->type,
-                'date' => $model->date,
-                'location' => $model->location,
-                'image_path' => $model->imagePath, // Store the file path
-                'image_url' => $model->imageUrl,   // Store the URL provided in the form
-
-            ])->execute();
-
-            Yii::$app->session->setFlash('success', 'Data saved successfully.');
-            return $this->redirect(['site/admin']);
         }
+    
+        return $this->render('admin', ['model' => $model]);
+    }
+    /**
+     * Fetch admin entries.
+     */
+    public function actionAdminEntries()
+    {
+        $entries = AdminEntry::find()->all();
+
+        return $this->render('index', [
+            'entries' => $entries,
+        ]);
     }
 
-    return $this->render('admin', ['model' => $model]); // Ensure the form renders if validation fails
-}
-    
-   
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
+        
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['admin']);
+            return $this->redirect(['site/admin']); // Redirect logged-in users to the admin page
         }
-
-        $model = new LoginForm();
+    
+        $model = new \app\models\LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['admin']);
+            return $this->redirect(['site/admin']); // Redirect after successful login
         }
-
-        $model->password = '';
+    
+        $model->password = ''; // Clear the password field after submission
         return $this->render('login', [
             'model' => $model,
         ]);
     }
-     public function actionAdminEntries()
-     {
-        // fetch all records from the admin_entries table
-        $entries =\app\models\AdminEntry::find()->all();
-        // pass the records from the admin_entries table
-    
-        return $this->render('index', [
-            'entries' => $entries,
-        ]);
-        
-     }
 
- 
+public function actionRegister()
+{
+    $model = new \app\models\RegistrationForm();
+
+    if ($model->load(Yii::$app->request->post()) && $model->register()) {
+        Yii::$app->session->setFlash('success', 'Registration successful! You can now log in.');
+        return $this->redirect(['site/login']); // Redirect to the login page after successful registration
+    }
+
+    return $this->render('register', [
+        'model' => $model,
+    ]);
+}
     /**
      * Logout action.
      *
@@ -169,11 +176,22 @@ public function actionAdmin()
         return $this->goHome();
     }
 
+    /**
+     * View entry details and related images.
+     */
    
+public function actionImage($id)
+{
+    $entry = AdminEntry::findOne($id); // Use $entry instead of $image
+
+    if (!$entry) {
+        throw new \yii\web\NotFoundHttpException('The requested entry does not exist.');
+    }
+
+    return $this->render('image', [
+        'entry' => $entry, // Pass the entry to the view
+        'relatedImages' => $entry->relatedImages, // Fetch related images using the relation
+    ]);
 }
-// Test database connection and query
-// $connection = Yii::$app->postDb;
-// $command = $connection->createCommand('SELECT * FROM admin_entries');
-// $rows = $command->queryAll();
-// var_dump($rows);
-// die();
+}
+

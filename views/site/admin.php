@@ -1,11 +1,14 @@
 <?php
+use yii\widgets\ActiveForm;
+use yii\helpers\Html;
+
+$this->title = 'Admin Form';
 ?>
 
 <style>
     body {
-       
         font-family: Arial, sans-serif;
-        background-color:rgba(121, 118, 118, 0.83); /* grey(100) */
+        background-color: rgba(121, 118, 118, 0.83); /* grey(100) */
     }
     form {
         font-family: Arial, sans-serif;
@@ -15,7 +18,6 @@
         border: 1px solid #ccc;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        
     }
 
     label {
@@ -51,67 +53,45 @@
         background-color: #0056b3;
     }
 
-    #image-preview {
-        display: none;
+    .image-preview {
+        display: inline-block;
         margin-top: 10px;
-        max-width: 100%;
+        max-width: 100px;
+        max-height: 100px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        margin-right: 10px;
     }
 </style>
 
-<form action="/site/admin" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+<div class="admin-form">
+    <h1><?= Html::encode($this->title) ?></h1>
 
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="AdminForm[title]" required>
-    <br>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <label for="description">Description:</label>
-    <textarea id="description" name="AdminForm[description]" required></textarea>
-    <br>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <label for="type">Type:</label>
-    <select id="type" name="AdminForm[type]" required>
-        <option value="upper">Upper</option>
-        <option value="middle">Middle</option>
-        <option value="lower">Lower</option>
-    </select>
-    <br>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="AdminForm[date]" required>
-    <br>
+    <?= $form->field($model, 'type')->dropDownList([
+        'upper' => 'Upper',
+        'middle' => 'Middle',
+        'lower' => 'Lower',
+    ], ['prompt' => 'Select Type']) ?>
 
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="AdminForm[location]" required>
-    <br>
+    <?= $form->field($model, 'date')->input('date') ?>
 
-    <label for="image">Upload Image or Enter URL:</label>
-    <input type="file" id="image-upload" name="AdminForm[imageFile]" accept="image/*" onchange="previewImage(event)">
-    <input type="url" id="image-url" name="AdminForm[imageUrl]" placeholder="Enter image URL" oninput="previewImageFromUrl(event)">
-    <img id="image-preview" alt="Image Preview">
-    <br>
+    <?= $form->field($model, 'location')->textInput(['maxlength' => true]) ?>
 
-    <button type="submit">Submit</button>
-</form>
+    <?= $form->field($model, 'image_url')->textInput(['maxlength' => true, 'placeholder' => 'Enter image URL']) ?>
 
-<script>
-    function previewImage(event) {
-        const imagePreview = document.getElementById('image-preview');
-        const file = event.target.files[0];
+    <?= $form->field($model, 'images[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            imagePreview.style.display = 'none';
-        }
-    }
-</script>
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
 
 

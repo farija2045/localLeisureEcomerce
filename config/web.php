@@ -10,6 +10,7 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+        '@uploads' => '@app/web/uploads', // Alias for the uploads directory
     ],
     'components' => [
         'request' => [
@@ -41,6 +42,13 @@ $config = [
                 ],
             ],
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                'site/image/<id:\d+>' => 'site/image',
+            ],
+        ],
         'db' => $db, // Default database (Leisure_DB) for admin login
         'postDb' => [ // Second database (post_db) for storing posts
             'class' => 'yii\db\Connection',
@@ -55,6 +63,7 @@ $config = [
             'rules' => [
                 // Add custom URL rules here if needed
                 'admin-entries' => 'site/admin-entries',
+                'site/image/<id:\d+>' => 'site/image',
             ],
         ],
     ],

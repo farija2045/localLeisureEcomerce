@@ -11,14 +11,37 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
 
         <p class="lead">Discover exciting leisure spots and activities near you!</p>
 
-        <p><a class="btn btn-lg btn-light" href="https://www.google.com/maps/search/leisure+areas+near+me" target="_blank">Find  Leisure Areas</a></p>
+        <p><a class="btn btn-lg btn-light" href="https://www.google.com/maps/search/leisure+areas+near+me" target="_blank">Find Leisure Areas</a></p>
     </div>
 
     <!-- Include admin-entries content -->
     <div>
-        <?= $this->render('admin-entries', [
-            'entries' => \app\models\AdminEntry::find()->all(), // Fetch entries directly
-        ]) ?>
+        <h2 class="text-center">Uploaded Entries</h2>
+        <div class="row">
+            <?php foreach (\app\models\AdminEntry::find()->all() as $entry): ?>
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <!-- Display the uploaded image -->
+                        <a href="<?= \yii\helpers\Html::encode($entry->image_url) ?>" target="_blank">
+                            <img src="<?= Yii::getAlias('@web') . '/' . $entry->image_path ?>" class="card-img-top" alt="<?= $entry->title ?>" style="max-height: 200px; object-fit: cover;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title"><?= \yii\helpers\Html::encode($entry->title) ?></h5>
+                            <p class="card-text"><?= \yii\helpers\Html::encode($entry->description) ?></p>
+                            
+                            <!-- Add a clickable link for the image_url -->
+                            <?php if (!empty($entry->image_url)): ?>
+                                <p>
+                                    <a href="<?= \yii\helpers\Html::encode($entry->image_url) ?>" target="_blank" class="btn btn-secondary">Visit Link</a>
+                                </p>
+                            <?php endif; ?>
+
+                            <a href="<?= \yii\helpers\Url::to(['site/image', 'id' => $entry->id]) ?>" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <div class="body-content">
@@ -38,13 +61,6 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
 
                 <p><a class="btn btn-outline-primary" href="#">Discover More &raquo;</a></p>
             </div>
-            <!-- <div class="col-lg-4">
-                <h2 class="text-primary">Upcoming Events</h2>
-
-                <p>Stay updated with the latest events happening in your area and never miss out on the fun!</p>
-
-                <p><a class="btn btn-outline-primary" href="#">View Events &raquo;</a></p>
-            </div> -->
         </div>
 
     </div>

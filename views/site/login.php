@@ -2,7 +2,6 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-
 /** @var app\models\LoginForm $model */
 
 use yii\bootstrap5\ActiveForm;
@@ -45,9 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php ActiveForm::end(); ?>
 
-            <div style="color:#999;">
-                You may login with <strong>test/admin</strong> .<br>
-                
+            <div style="color:#999; margin-top: 20px;">
+                <p>Don't have an account? <?= Html::a('Register here', ['site/register'], ['class' => 'text-primary']) ?></p>
+            </div>
 
         </div>
     </div>

@@ -12,9 +12,14 @@ class m250418_113141_create_user_table extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('{{%user}}', [
-            'id' => $this->primaryKey(),
-        ]);
+        if ($this->db->getTableSchema('{{%user}}', true) === null) {
+            $this->createTable('{{%user}}', [
+                'id' => $this->primaryKey(),
+                // Add other columns as needed
+            ]);
+        } else {
+            echo "Table 'user' already exists. Skipping creation.\n";
+        }
     }
 
     /**
@@ -22,6 +27,8 @@ class m250418_113141_create_user_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%user}}');
+        if ($this->db->getTableSchema('{{%user}}', true) !== null) {
+            $this->dropTable('{{%user}}');
+        }
     }
 }
