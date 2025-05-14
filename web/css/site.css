@@ -1,10 +1,12 @@
+/* General container padding */
 main > .container {
     padding: 70px 15px 20px;
 }
 
+/* Footer styles */
 .footer {
     background-color: #f5f5f5;
-    font-size: .9em;
+    font-size: 0.9em;
     height: 60px;
 }
 
@@ -13,21 +15,20 @@ main > .container {
     padding-left: 15px;
 }
 
+/* Styling for "not set" text */
 .not-set {
     color: #c55;
     font-style: italic;
 }
 
-/* add sorting icons to gridview sort links */
+/* Add sorting icons to gridview sort links */
 a.asc:after, a.desc:after {
     content: '';
-    left: 3px;
     display: inline-block;
     width: 0;
     height: 0;
     border: solid 5px transparent;
     margin: 4px 4px 2px 4px;
-    background: transparent;
 }
 
 a.asc:after {
@@ -40,16 +41,19 @@ a.desc:after {
     border-bottom-width: 0;
 }
 
+/* Grid view table headers */
 .grid-view th {
     white-space: nowrap;
 }
 
+/* Hint block styling */
 .hint-block {
     display: block;
     margin-top: 5px;
     color: #999;
 }
 
+/* Error summary styling */
 .error-summary {
     color: #a94442;
     background: #fdf7f7;
@@ -58,15 +62,15 @@ a.desc:after {
     margin: 0 0 15px 0;
 }
 
-/* align the logout "link" (button in form) of the navbar */
+/* Align the logout button in the navbar */
 .nav li > form > button.logout {
     padding-top: 7px;
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
     .nav li > form > button.logout {
-        display:block;
+        display: block;
         text-align: left;
         width: 100%;
         padding: 10px 0;
@@ -83,6 +87,7 @@ a.desc:after {
     outline: none;
 }
 
+/* Form group spacing */
 .form-group {
     margin-bottom: 1rem;
 }
@@ -143,3 +148,51 @@ a.desc:after {
     color: #555;
 }
 
+/* Responsive adjustments for entry cards */
+@media (max-width: 768px) {
+    .entry-card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .entry-card {
+        width: 100%;
+    }
+
+    .entry-details h3 {
+        font-size: 16px;
+    }
+
+    .entry-details p {
+        font-size: 12px;
+    }
+}
+
+/* Hover effect for the entire frame */
+.entry-frame {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+}
+
+.entry-frame:hover {
+    transform: translateY(-5px); /* Move the frame slightly upward */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow */
+}
+
+/* Responsive adjustments for entry frames */
+@media (max-width: 768px) {
+    .entry-frame {
+        margin: 10px auto;
+    }
+
+    .entry-frame img {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .entry-frame img {
+        max-height: 200px;
+    }
+}
