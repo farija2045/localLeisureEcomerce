@@ -23,15 +23,13 @@ class EntryImages extends ActiveRecord
         return 'entry_images'; // Ensure this matches your database table name
     }
 
-    /**
-     * {@inheritdoc}
-     */
-
-         
+    // Use the default DB connection
+    // Remove or update the getDb() method
     public static function getDb()
     {
-        return Yii::$app->get('postDb');
+        return Yii::$app->db;
     }
+
     public function rules()
     {
         return [

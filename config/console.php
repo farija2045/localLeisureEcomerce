@@ -27,13 +27,13 @@ $config = [
             ],
         ],
         'db' => $db, // Default database (Leisure_DB)
-        'postDb' => [ // Add the postDb connection for the second database
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=post_db', // Replace with your database name
-            'username' => 'root', // Replace with your database username
-            'password' => '', // Replace with your database password
-            'charset' => 'utf8',
-        ],
+        // 'postDb' => [ // Add the postDb connection for the second database
+        //     'class' => 'yii\db\Connection',
+        //     'dsn' => 'mysql:host=localhost;dbname=post_db', // Replace with your database name
+        //     'username' => 'root', // Replace with your database username
+        //     'password' => '', // Replace with your database password
+        //     'charset' => 'utf8',
+        // ],
     ],
     'params' => $params,
     /*

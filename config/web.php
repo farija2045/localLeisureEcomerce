@@ -5,6 +5,8 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'name' => 'Leisure SF',
+    'language' => 'en-US',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -25,7 +27,7 @@ $config = [
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'leisure/error',
         ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
@@ -46,27 +48,14 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'site/image/<id:\d+>' => 'site/image',
+                'admin-entries' => 'leisure/admin-entries',
+                'leisure/image/<id:\d+>' => 'leisure/image',
             ],
         ],
-        'db' => $db, // Default database (Leisure_DB) for admin login
-        'postDb' => [ // Second database (post_db) for storing posts
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=post_db', 
-            'username' => 'root', // Replace with your database username
-            'password' => '', // Replace with your database password
-            'charset' => 'utf8',
-        ],
-        'urlManager' => [ // Enable pretty URLs
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                // Add custom URL rules here if needed
-                'admin-entries' => 'site/admin-entries',
-                'site/image/<id:\d+>' => 'site/image',
-            ],
-        ],
+        'db' => $db, // Default database (leisure_db) for admin login
+        
     ],
+    'defaultRoute' => 'leisure/index',
     'params' => $params,
 ];
 

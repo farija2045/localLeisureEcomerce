@@ -22,6 +22,7 @@ $this->title = 'Admin Entries';
                     <p><strong>Type:</strong> <?= htmlspecialchars($entry->type) ?></p>
                     <p><strong>Date:</strong> <?= htmlspecialchars($entry->date) ?></p>
                     <p><strong>Location:</strong> <?= htmlspecialchars($entry->location) ?></p>
+                    <p><strong>Uploaded by:</strong> <?= htmlspecialchars($entry->user->username) ?></p>
                 </div>
             </a>
         <?php endforeach; ?>

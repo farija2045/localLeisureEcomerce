@@ -17,4 +17,5 @@ $this->title = 'Register';
     <?= Html::submitButton('Register', ['class' => 'btn btn-primary']) ?>
 </div>
 
+
 <?php ActiveForm::end(); ?>

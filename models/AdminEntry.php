@@ -6,7 +6,7 @@ use Yii;
 use yii\web\UploadedFile;
 
 /**
- * This is the model class for table "admin_entries".
+ * This is the model class for table "admin_entry".
  *
  * @property int $id
  * @property string $title
@@ -16,8 +16,10 @@ use yii\web\UploadedFile;
  * @property string|null $location
  * @property string|null $image_path
  * @property string|null $image_url
+ * @property int $user_id
  * @property UploadedFile[] $images Array to store multiple uploaded files
  * @property EntryImages[] $relatedImages Relation to the entry_images table
+ * @property User $user Relation to the user table
  */
 class AdminEntry extends \yii\db\ActiveRecord
 {
@@ -38,15 +40,7 @@ class AdminEntry extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'admin_entries';
-    }
-
-    /**
-     * @return \yii\db\Connection the database connection used by this AR class.
-     */
-    public static function getDb()
-    {
-        return Yii::$app->get('postDb');
+        return 'admin_entries'; // Make sure this matches your actual table name
     }
 
     /**
@@ -56,12 +50,14 @@ class AdminEntry extends \yii\db\ActiveRecord
     {
         return [
             [['location', 'image_path', 'image_url'], 'default', 'value' => null],
-            [['title', 'description', 'type', 'date'], 'required'],
+            [['title', 'description', 'type', 'date', 'user_id'], 'required'],
             [['description', 'type'], 'string'],
             [['date'], 'safe'],
             [['title', 'location', 'image_path', 'image_url'], 'string', 'max' => 255],
             ['type', 'in', 'range' => array_keys(self::optsType())],
             [['images'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxFiles' => 10], // Allow up to 10 files
+            [['user_id'], 'integer'],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -80,6 +76,7 @@ class AdminEntry extends \yii\db\ActiveRecord
             'image_path' => 'Image Path',
             'image_url' => 'Image URL',
             'images' => 'Images',
+            'user_id' => 'User',
         ];
     }
 
@@ -150,5 +147,14 @@ class AdminEntry extends \yii\db\ActiveRecord
     public function getRelatedImages()
     {
         return $this->hasMany(EntryImages::class, ['entry_id' => 'id']);
+    }
+
+    /**
+     * Relation to the user table
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

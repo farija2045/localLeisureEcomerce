@@ -10,7 +10,7 @@ use yii\bootstrap5\Html;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
+<div class="leisure-login">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>Please fill out the following fields to login:</p>
@@ -40,12 +40,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div>
                     <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
                 </div>
+                                
+                <div style="margin-top: 10px;">
+                    <?= Html::a('Forgot your password?', ['leisure/request-password-reset'], ['class' => 'text-secondary']) ?>
+                </div>
             </div>
 
             <?php ActiveForm::end(); ?>
 
             <div style="color:#999; margin-top: 20px;">
-                <p>Don't have an account? <?= Html::a('Register here', ['site/register'], ['class' => 'text-primary']) ?></p>
+                <p>Don't have an account? <?= Html::a('Register here', ['leisure/register'], ['class' => 'text-primary']) ?></p>
             </div>
 
         </div>
