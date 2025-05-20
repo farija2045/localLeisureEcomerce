@@ -211,6 +211,12 @@ class LeisureController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionAboutUs()
+   {
+    return $this->render('aboutUs');
+   }
+
+    
 
 }
 

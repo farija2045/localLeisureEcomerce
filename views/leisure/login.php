@@ -15,43 +15,36 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>Please fill out the following fields to login:</p>
 
-    <div class="row">
-        <div class="col-lg-5">
+    <?php $form = ActiveForm::begin([
+        'id' => 'login-form',
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'labelOptions' => ['class' => 'form-label'],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback'],
+        ],
+    ]); ?>
 
-            <?php $form = ActiveForm::begin([
-                'id' => 'login-form',
-                'fieldConfig' => [
-                    'template' => "{label}\n{input}\n{error}",
-                    'labelOptions' => ['class' => 'col-lg-1 col-form-label mr-lg-3'],
-                    'inputOptions' => ['class' => 'col-lg-3 form-control'],
-                    'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-                ],
-            ]); ?>
+    <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= $form->field($model, 'rememberMe')->checkbox([
+        'template' => "<div class=\"form-check\">{input} {label}</div>\n{error}",
+        'labelOptions' => ['class' => 'form-check-label'],
+        'inputOptions' => ['class' => 'form-check-input'],
+    ]) ?>
 
-            <?= $form->field($model, 'rememberMe')->checkbox([
-                'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            ]) ?>
-
-            <div class="form-group">
-                <div>
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-                                
-                <div style="margin-top: 10px;">
-                    <?= Html::a('Forgot your password?', ['leisure/request-password-reset'], ['class' => 'text-secondary']) ?>
-                </div>
-            </div>
-
-            <?php ActiveForm::end(); ?>
-
-            <div style="color:#999; margin-top: 20px;">
-                <p>Don't have an account? <?= Html::a('Register here', ['leisure/register'], ['class' => 'text-primary']) ?></p>
-            </div>
-
+    <div class="form-group w-100">
+        <?= Html::submitButton('Login', ['class' => 'btn btn-primary w-100', 'name' => 'login-button']) ?>
+        <div class="text-center" style="margin-top: 10px;">
+            <?= Html::a('Forgot your password?', ['leisure/request-password-reset'], ['class' => 'text-secondary']) ?>
         </div>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+
+    <div class="text-center" style="color:#999; margin-top: 20px;">
+        <p>Don't have an account? <?= Html::a('Register here', ['leisure/register'], ['class' => 'text-primary']) ?></p>
     </div>
 </div>

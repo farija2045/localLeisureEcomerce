@@ -20,7 +20,7 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
         <div class="row">
             <?php foreach (\app\models\AdminEntry::find()->all() as $entry): ?>
                 <div class="col-lg-4 mb-4">
-                    <div class="card">
+                    <div class="card hover-effect"> <!-- Added hover-effect class -->
                         <!-- Display the uploaded image -->
                         <a href="<?= \yii\helpers\Html::encode($entry->image_url) ?>" target="_blank">
                             <img src="<?= Yii::getAlias('@web') . '/' . $entry->image_path ?>" class="card-img-top" alt="<?= $entry->title ?>" style="max-height: 200px; object-fit: cover;">
@@ -44,24 +44,5 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
         </div>
     </div>
 
-    <div class="body-content">
-
-        <div class="row text-center">
-            <div class="col-lg-4 mb-4">
-                <h2 class="text-primary">Explore Activities</h2>
-
-                <p>Find a variety of leisure activities tailored to your preferences, from outdoor adventures to relaxing retreats.</p>
-
-                <p><a class="btn btn-outline-primary" href="#">Explore Now &raquo;</a></p>
-            </div>
-            <div class="col-lg-4 mb-4">
-                <h2 class="text-primary">Discover Venues</h2>
-
-                <p>Browse through a curated list of venues offering unique experiences for individuals, families, and groups.</p>
-
-                <p><a class="btn btn-outline-primary" href="#">Discover More &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
 </div>
+

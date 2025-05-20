@@ -36,13 +36,19 @@ class RegistrationForm extends Model
         if (!$this->validate()) {
             return false;
         }
-
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
-        $user->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
-        $user->auth_key = \Yii::$app->security->generateRandomString();
-        $user->role = 'user'; // Default role for new users
+        $user->setPassword($this->password); // Use the model method
+        $user->generateAuthKey();            // Use the model method
+        $user->role = 'user'; 
+
+        // $user = new User();
+        // $user->username = $this->username;
+        // $user->email = $this->email;
+        // $user->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
+        // $user->auth_key = \Yii::$app->security->generateRandomString();
+        // $user->role = 'user'; // Default role for new users
 
         return $user->save();
     }

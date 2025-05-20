@@ -37,57 +37,29 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top px-3'],
-        'brandOptions' => [
-            'class' => 'fw-bold fs-4',
-            'style' => 'color:#6C63FF !important; letter-spacing:1px;'
-        ],
+         'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top px-3'], 
+         'brandOptions' => [
+        'class' => 'fw-bold fs-4',
+        'style' => 'color:#6C63FF !important; letter-spacing:1px;'
+    ],
     ]);
-
-    
-    $items = [];
-
-    // Always show "About Us"
-    $items[] = [
-        'label' => 'About Us',
-        'url' => ['/leisure/about-us'],
-        'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']
-    ];
-
-    if (Yii::$app->user->isGuest) {
-        $items[] = [
-            'label' => 'Login/ Register',
-            'url' => ['/leisure/login'],
-            'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']
-        ];
-    } else {
-        // Show Admin link only for admin users
-        if (isset(Yii::$app->user->identity->isAdmin) && Yii::$app->user->identity->isAdmin) {
-            $items[] = [
-                'label' => 'Admin',
-                'url' => ['/admin/index'],
-                'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']
-            ];
-        }
-
-        $items[] = '<li class="nav-item">'
-            . Html::beginForm(['/leisure/logout'], 'post', ['class' => 'd-inline'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                [
-                    'class' => 'nav-link logout fw-semibold',
-                    'style' => 'color:#6C63FF !important; background:none; border:none; padding:0 1rem; cursor:pointer;'
-                ]
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-
+        
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ms-auto align-items-center'],
-        'items' => $items,
+        'items' => [
+            Yii::$app->user->isGuest
+                ? ['label' => 'Login', 'url' => ['/leisure/login'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']]
+                : '<li class="nav-item">'
+                    . Html::beginForm(['/leisure/logout'])
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->username . ')',
+                        ['class' => 'nav-link btn btn-link logout fw-semibold', 'style' => 'color:#6C63FF !important;']
+                    )
+                    . Html::endForm()
+                    . '</li>'
+        ]
     ]);
-
+    
     NavBar::end();
     ?>
 </header>
