@@ -29,8 +29,9 @@ class PasswordResetRequestForm extends Model
             return false;
         }
 
-        // Generate token (implement this in your User model)
+        // Generate password reset token
         $user->generatePasswordResetToken();
+
         if (!$user->save()) {
             return false;
         }
@@ -38,7 +39,8 @@ class PasswordResetRequestForm extends Model
         return Yii::$app
             ->mailer
             ->compose(
-                ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
+                // Use @app alias to make sure views are located properly
+                ['html' => '@app/mail/passwordResetToken-html', 'text' => '@app/mail/passwordResetToken-text'],
                 ['user' => $user]
             )
             ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name . ' robot'])
