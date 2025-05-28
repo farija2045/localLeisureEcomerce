@@ -25,6 +25,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['leisure/login'], // Redirect to leisure/login for user login
         ],
         'errorHandler' => [
             'errorAction' => 'leisure/error',

@@ -133,22 +133,33 @@ class LeisureController extends Controller
     /**
      * Login action.
      */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['leisure/admin']);
-        }
-
-        $model = new \app\models\LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['leisure/admin']);
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+   public function actionLogin()
+{
+    if (!Yii::$app->user->isGuest) {
+        return $this->redirectAfterLogin(); // check user role
     }
+
+    $model = new \app\models\LoginForm();
+
+    if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        return $this->redirectAfterLogin(); // check user role after login
+    }
+
+    $model->password = '';
+    return $this->render('login', ['model' => $model]);
+}
+
+private function redirectAfterLogin()
+{
+    $user = Yii::$app->user->identity;
+
+    if ($user->role === 'admin') {
+        return $this->redirect(['leisure/admin-choice']); // page with two choices
+    }
+
+    return $this->redirect(['leisure/admin']); // regular user
+}
+
 
     /**
      * Register action.
@@ -233,6 +244,17 @@ class LeisureController extends Controller
     return $this->render('resetPassword', [
         'model' => $model,
     ]);
+}
+
+
+public function actionAdminChoice()
+{
+    
+    if (Yii::$app->user->isGuest || Yii::$app->user->identity->role !== 'admin') {
+        return $this->goHome();
+    }
+
+    return $this->render('admin-choice');
 }
 
     
