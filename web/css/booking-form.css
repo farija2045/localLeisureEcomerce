@@ -1,0 +1,33 @@
+/* web/css/booking-form.css */
+
+.booking-form-container {
+    max-width: 480px;
+    margin: 50px auto; /* center horizontally and add vertical spacing */
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s ease;
+}
+
+.booking-form-container:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.booking-form h5 {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary.px-5 {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+}
+
+.btn-primary.shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}

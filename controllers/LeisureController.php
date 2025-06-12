@@ -10,16 +10,15 @@ use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use app\models\AdminEntry;
 use app\models\EntryImages;
-use app\models\PasswordResetRequestForm;
-    
+use app\models\PasswordResetRequestFor;
+use app\models\ContactMessage;
+use app\models\Booking;
+use yii\web\NotFoundHttpException;
 
 Yii::setAlias('@uploads', Yii::getAlias('@webroot/uploads'));
 
 class LeisureController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
@@ -43,9 +42,6 @@ class LeisureController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -59,11 +55,6 @@ class LeisureController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
         $entries = AdminEntry::find()->all();
@@ -72,9 +63,6 @@ class LeisureController extends Controller
         ]);
     }
 
-    /**
-     * Admin action to handle multiple image uploads.
-     */
     public function actionAdmin()
     {
         $model = new AdminEntry();
@@ -82,7 +70,7 @@ class LeisureController extends Controller
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
             $model->images = UploadedFile::getInstances($model, 'images');
-            $model->user_id = Yii::$app->user->id; // Set the user ID from the logged-in user
+            $model->user_id = Yii::$app->user->id;
 
             if ($model->validate()) {
                 if ($model->save()) {
@@ -119,51 +107,41 @@ class LeisureController extends Controller
         return $this->render('admin', ['model' => $model]);
     }
 
-    /**
-     * Fetch admin entries.
-     */
     public function actionAdminEntries()
     {
         $entries = AdminEntry::find()->where(['user_id' => Yii::$app->user->id])->all();
-         return $this->render('index', [
+        return $this->render('index', [
             'entries' => $entries,
         ]);
     }
 
-    /**
-     * Login action.
-     */
-   public function actionLogin()
-{
-    if (!Yii::$app->user->isGuest) {
-        return $this->redirectAfterLogin(); // check user role
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirectAfterLogin();
+        }
+
+        $model = new \app\models\LoginForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->redirectAfterLogin();
+        }
+
+        $model->password = '';
+        return $this->render('login', ['model' => $model]);
     }
 
-    $model = new \app\models\LoginForm();
+    private function redirectAfterLogin()
+    {
+        $user = Yii::$app->user->identity;
 
-    if ($model->load(Yii::$app->request->post()) && $model->login()) {
-        return $this->redirectAfterLogin(); // check user role after login
+        if ($user->role === 'admin') {
+            return $this->redirect(['leisure/admin-choice']);
+        }
+
+        return $this->redirect(['leisure/admin']);
     }
 
-    $model->password = '';
-    return $this->render('login', ['model' => $model]);
-}
-
-private function redirectAfterLogin()
-{
-    $user = Yii::$app->user->identity;
-
-    if ($user->role === 'admin') {
-        return $this->redirect(['leisure/admin-choice']); // page with two choices
-    }
-
-    return $this->redirect(['leisure/admin']); // regular user
-}
-
-
-    /**
-     * Register action.
-     */
     public function actionRegister()
     {
         $model = new \app\models\RegistrationForm();
@@ -178,26 +156,18 @@ private function redirectAfterLogin()
         ]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
     public function actionLogout()
     {
         Yii::$app->user->logout();
         return $this->goHome();
     }
 
-    /**
-     * View entry details and related images.
-     */
     public function actionImage($id)
     {
         $entry = AdminEntry::findOne($id);
 
         if (!$entry) {
-            throw new \yii\web\NotFoundHttpException('The requested entry does not exist.');
+            throw new NotFoundHttpException('The requested entry does not exist.');
         }
 
         return $this->render('image', [
@@ -205,59 +175,130 @@ private function redirectAfterLogin()
             'relatedImages' => $entry->relatedImages,
         ]);
     }
-        
-   
+
     public function actionRequestPasswordReset()
     {
-        $model = new PasswordResetRequestForm();
+        $model = new PasswordResetRequestFor();
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->redirect(['leisure/reset-password']);
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset the password for the provided email address.');
             }
         }
+
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
     }
+
+    public function actionResetPassword($token)
+    {
+        try {
+            $model = new \app\models\ResetPasswordForm($token);
+        } catch (\yii\base\InvalidArgumentException $e) {
+            throw new \yii\web\BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            Yii::$app->session->setFlash('success', 'New password saved.');
+            return $this->goHome();
+        }
+
+        return $this->render('resetPassword', [
+            'model' => $model,
+        ]);
+    }
+
     public function actionAboutUs()
-   {
-    return $this->render('aboutUs');
-   }
-  
-   public function actionResetPassword($token)
+    {
+        return $this->render('aboutUs');
+    }
+
+    public function actionAdminChoice()
+    {
+        if (Yii::$app->user->isGuest || Yii::$app->user->identity->role !== 'admin') {
+            return $this->goHome();
+        }
+
+        return $this->render('admin-choice');
+    }
+
+    public function actionContactSeller($entry_id)
+    {
+        $model = new ContactMessage();
+        $model->entry_id = $entry_id;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Message sent to seller!');
+            return $this->redirect(['leisure/view', 'id' => $entry_id]);
+        }
+
+        return $this->render('contact-seller', [
+            'model' => $model,
+            'entry_id' => $entry_id,
+        ]);
+    }
+
+    public function actionBook($entry_id)
 {
-    try {
-        $model = new ResetPasswordForm($token);
-    } catch (InvalidArgumentException $e) {
-        throw new BadRequestHttpException($e->getMessage());
+    $entry = AdminEntry::findOne($entry_id);
+    if (!$entry) {
+        throw new NotFoundHttpException('Entry not found.');
     }
 
-    if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-        Yii::$app->session->setFlash('success', 'New password saved.');
+    $model = new Booking();
+    $model->entry_id = $entry_id;
+    // If user is guest, set user_id to null; else set logged in user ID
+    $model->user_id = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
 
-        return $this->goHome();
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        Yii::$app->session->setFlash('success', 'Booking successful!');
+        return $this->redirect(['leisure/index', 'id' => $entry_id]);
     }
 
-    return $this->render('resetPassword', [
+    return $this->render('booking-form', ['model' => $model, 'entry_id' => $entry->id]);
+}
+
+  public function actionBookingForm($entry_id)
+{
+    $model = new Booking();
+    $model->entry_id = $entry_id;
+
+    // 👇 Set user_id from currently logged in user
+    if (!Yii::$app->user->isGuest) {
+        $model->user_id = Yii::$app->user->id;
+    }
+
+    if ($model->load(Yii::$app->request->post())) {
+        if ($model->validate()) {
+            if ($model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Booking submitted successfully.');
+                return $this->redirect(['leisure/index', 'id' => $entry_id]);
+            }
+        } else {
+            Yii::$app->session->setFlash('error', json_encode($model->getErrors()));
+        }
+    }
+
+    return $this->render('booking-form', [
+        'model' => $model,
+        'entry_id' => $entry_id,
+    ]);
+}
+public function actionView($id)
+{
+    $model = AdminEntry::findOne($id); 
+    if (!$model) {
+        throw new \yii\web\NotFoundHttpException('Leisure entry not found.');
+    }
+
+    return $this->render('view', [
         'model' => $model,
     ]);
 }
 
 
-public function actionAdminChoice()
-{
-    
-    if (Yii::$app->user->isGuest || Yii::$app->user->identity->role !== 'admin') {
-        return $this->goHome();
-    }
-
-    return $this->render('admin-choice');
 }
-
-    
-
-}
-

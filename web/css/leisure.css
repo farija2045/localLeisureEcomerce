@@ -196,3 +196,37 @@ a.desc:after {
         max-height: 200px;
     }
 }
+/* Center the whole form container horizontally and narrow it */
+.promotion-form-container {
+    max-width: 450px;          /* narrower */
+    margin: 60px auto;         /* center horizontally, top/bottom margin */
+    padding: 2rem 2rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Center the heading text */
+.promotion-form-container h3 {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;     /* CENTER the text */
+    width: 100%;            /* make sure it spans full width */
+}
+
+/* Make form take full width of container */
+.promotion-form-container form {
+    width: 100%;
+}
+
+/* Submit button full width and styled */
+.promotion-form-container .form-group.mt-3 button {
+    width: 100%;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border-radius: 8px;
+}

@@ -37,29 +37,43 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-         'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top px-3'], 
-         'brandOptions' => [
-        'class' => 'fw-bold fs-4',
-        'style' => 'color:#6C63FF !important; letter-spacing:1px;'
-    ],
+        'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top px-3'],
+        'brandOptions' => [
+            'class' => 'fw-bold fs-4',
+            'style' => 'color:#6C63FF !important; letter-spacing:1px;'
+        ],
     ]);
-        
+
+    $menuItems = [];
+
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Login', 'url' => ['/leisure/login'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']];
+    } else {
+        // If admin, add admin navigation links
+        if (Yii::$app->user->identity->role === 'admin') {
+            $menuItems[] = ['label' => 'Admin Dashboard', 'url' => ['/admin/index'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']];
+            $menuItems[] = ['label' => 'Bookings', 'url' => ['/admin/bookings'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']];
+            $menuItems[] = ['label' => 'Promotions', 'url' => ['/admin/promotions/'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']];
+            $menuItems[] = ['label' => 'Messages', 'url' => ['/admin/contact-messages'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']];
+        }
+
+        // Logout button
+        $menuItems[] = '<li class="nav-item">'
+            . Html::beginForm(['/leisure/logout'], 'post', ['class' => 'd-inline'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'nav-link btn btn-link logout fw-semibold', 'style' => 'color:#6C63FF !important; padding: 0;']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ms-auto align-items-center'],
-        'items' => [
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/leisure/login'], 'linkOptions' => ['class' => 'fw-semibold', 'style' => 'color:#6C63FF !important;']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/leisure/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout fw-semibold', 'style' => 'color:#6C63FF !important;']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
+        'items' => $menuItems,
+        'encodeLabels' => false,
     ]);
-    
+
     NavBar::end();
     ?>
 </header>
@@ -77,7 +91,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; Powered By Ecomerce <?= date('Y') ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; Powered By Ecommerce <?= date('Y') ?></div>
         </div>
     </div>
 </footer>
