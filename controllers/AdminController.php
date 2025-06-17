@@ -11,7 +11,11 @@ use yii\db\Query;
 use app\models\User;
 use app\models\Booking;
 use app\models\Promotion;
-use app\models\ContactMessage;
+use app\models\ContactMessage;  
+use yii\helpers\ArrayHelper;
+use app\models\AdminEntry;
+use app\models\EntryImages;
+
 
 /**
  * AdminController handles admin functionalities such as managing users, bookings, promotions, and messages.
@@ -48,9 +52,17 @@ class AdminController extends Controller
 
         $users = $query->all();
 
+        // Fetch active promotion for popup
+        $promotions = Promotion::find()
+            ->where(['<=', 'start_date', date('Y-m-d')])
+            ->andWhere(['>=', 'end_date', date('Y-m-d')])
+            ->orderBy(['start_date' => SORT_DESC])
+            ->all();
+
         return $this->render('index', [
             'users' => $users,
             'search' => $search,
+            'promotions' => $promotions, // Pass promotions to view
         ]);
     }
 
@@ -183,18 +195,25 @@ class AdminController extends Controller
     /**
      * Create a promotion.
      */
-    public function actionCreatePromotion()
-    {
-        $model = new Promotion();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Promotion created.');
-            return $this->redirect(['promotions']);
-        }
+public function actionCreatePromotion()
+{
+    $model = new Promotion();
 
-        return $this->render('promotions/create', ['model' => $model]);
+    // Fetch all entries for dropdown
+    $entries = AdminEntry::find()->all();
+    $entryList = ArrayHelper::map($entries, 'id', 'title'); // or use another field for display
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        Yii::$app->session->setFlash('success', 'Promotion created.');
+        return $this->redirect(['promotions']);
     }
 
+    return $this->render('promotions/create', [
+        'model' => $model,
+        'entryList' => $entryList,
+    ]);
+}
     /**
      * Delete a promotion.
      */

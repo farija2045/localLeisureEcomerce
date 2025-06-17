@@ -10,13 +10,12 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
-        '@uploads' => '@app/web/uploads', // Alias for the uploads directory
+        '@bower'   => '@vendor/bower-asset',
+        '@npm'     => '@vendor/npm-asset',
+        '@uploads' => '@app/web/uploads', // Alias for uploads
     ],
     'components' => [
         'request' => [
-            // Insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'ku9d6H9wRolFLDzARFHvQd1K8Gg18zqx',
         ],
         'cache' => [
@@ -25,7 +24,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['leisure/login'], // Redirect to leisure/login for user login
+            'loginUrl' => ['leisure/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'leisure/error',
@@ -33,8 +32,14 @@ $config = [
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
-            // Send all mails to a file by default.
-            'useFileTransport' => true,
+            'useFileTransport' => true, // Set to false to send real emails via SMTP
+
+            // Uncomment below to use real SMTP (example with Gmail)
+            /*
+            'transport' => [
+                'dsn' => 'smtp://your_email@gmail.com:your_password@smtp.gmail.com:587?encryption=tls',
+            ],
+            */
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -53,27 +58,24 @@ $config = [
                 'leisure/image/<id:\d+>' => 'leisure/image',
             ],
         ],
-        'db' => $db, // Default database (leisure_db) for admin login
-        
+        'db' => $db,
     ],
     'defaultRoute' => 'leisure/index',
     'params' => $params,
 ];
 
+// DEV MODE MODULES (debug, gii)
 if (YII_ENV_DEV) {
-    // Configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        // Uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'class' => yii\debug\Module::class,
+        // 'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-        // Uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'class' => yii\gii\Module::class,
+        // 'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 

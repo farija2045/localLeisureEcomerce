@@ -4,7 +4,7 @@ use yii\helpers\Html;
 $this->title = Html::encode($entry->title ?? 'Entry Details');
 ?>
 
-<div class="container image-page mt-4">
+<div class="container image-page mt-4 u-form">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8">
 

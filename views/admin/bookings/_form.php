@@ -8,6 +8,8 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="booking-form">
+    <h1><?= Html::encode($this->title) ?></h1>
+    <p>Please fill out the following fields to book your leisure spot:</p>
 
     <?php $form = ActiveForm::begin(); ?>
 

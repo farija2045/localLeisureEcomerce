@@ -3,6 +3,8 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 
 $this->title = 'Register';
+$this->params['breadcrumbs'][] = $this->title;
+use app\models\RegisterForm;
 ?>
 
 <div class="leisure-register">

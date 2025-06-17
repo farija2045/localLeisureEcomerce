@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="form-group w-100">
         <?= Html::submitButton('Login', ['class' => 'btn btn-primary w-100', 'name' => 'login-button']) ?>
-        <div class="text-center" style="margin-top: 10px;">
+        <div class=" text-req" style="margin-top: 10px;">
             <?= Html::a('Forgot your password?', ['leisure/request-password-reset'], ['class' => 'text-secondary']) ?>
         </div>
     </div>

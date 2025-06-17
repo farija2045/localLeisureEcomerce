@@ -4,10 +4,12 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\Promotion $model */
+/** @var array $entryList */
+/** @var array $imageList */
 
-$this->title = 'Create Promotion';
+
 $this->params['breadcrumbs'][] = ['label' => 'Promotions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="promotion-create">
 
@@ -15,6 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'entryList' => $entryList,
+    
     ]) ?>
 
 </div>

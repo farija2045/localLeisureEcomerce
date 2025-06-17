@@ -3,9 +3,10 @@ use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 $this->title = 'Request password reset';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<div class="leisure-reset d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
         <h2 class="text-center mb-3"><?= Html::encode($this->title) ?></h2>
         <p class="text-center mb-4">

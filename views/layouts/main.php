@@ -17,17 +17,19 @@ $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
+
+    <link rel="icon" type="image/png" href="<?= Yii::getAlias('@web/images/favcon.png') ?>">
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?= Yii::getAlias('@web/css/custom.css') ?>" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <?php $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'); ?>
 
 </head>
@@ -46,7 +48,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         ],
     ]);
 
-    
     $items = [];
 
     // Always show "About Us"
@@ -93,6 +94,20 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     NavBar::end();
     ?>
 </header>
+
+<!-- Navigation Buttons and Dropdown (appears on every page) -->
+<div class="navigation-buttons mb-3" style="margin-top:70px;">
+    <button type="button" class="btn btn-secondary" onclick="window.history.back();">Go Back</button>
+    <button type="button" class="btn btn-secondary" onclick="window.history.forward();">Go Forward</button>
+    <select class="form-select d-inline-block w-auto" onchange="if(this.value) window.location.href=this.value;">
+        <option value="">Select Page...</option>
+        <option value="/site/index">Home</option>
+        <option value="/leisure/about-us">About Us</option>
+        <option value="/leisure/booking">Booking</option>
+        <option value="/leisure/contact">Contact</option>
+        <!-- Add more destinations as needed -->
+    </select>
+</div>
 
 <main id="main" class="flex-shrink-0" role="main">
     <div class="main-content container py-4">

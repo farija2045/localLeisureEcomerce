@@ -5,13 +5,17 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\User[] $users */
 /** @var string $search */
+/** @var app\models\Promotion|null $promotion */
 
 $this->title = 'Users & Image Count';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerCssFile('@web/css/admin.css', ['depends' => [\yii\bootstrap5\BootstrapAsset::className()]]);
 ?>
 
+
+
 <div class="container py-4" style="padding-top: 100px;">
-    <h1 class="mb-4"><?= Html::encode($this->title) ?></h1>
+    <h1 class="mb-4 text-center"><?= Html::encode($this->title) ?></h1>
 
     <!-- Search form -->
     <?php $form = ActiveForm::begin([

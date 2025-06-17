@@ -10,15 +10,27 @@ use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use app\models\AdminEntry;
 use app\models\EntryImages;
-use app\models\PasswordResetRequestFor;
+use app\models\PasswordResetRequestForm;
 use app\models\ContactMessage;
 use app\models\Booking;
+use app\models\Promotion;
 use yii\web\NotFoundHttpException;
 
 Yii::setAlias('@uploads', Yii::getAlias('@webroot/uploads'));
 
 class LeisureController extends Controller
-{
+{ 
+    public $layout = 'main';
+
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            // Custom logic before action
+            return true;
+        }
+        return false;
+    }
+
     public function behaviors()
     {
         return [
@@ -58,8 +70,17 @@ class LeisureController extends Controller
     public function actionIndex()
     {
         $entries = AdminEntry::find()->all();
+
+        
+        $promotions = \app\models\Promotion::find()
+            ->where(['<=', 'start_date', date('Y-m-d')])
+            ->andWhere(['>=', 'end_date', date('Y-m-d')])
+            ->orderBy(['start_date' => SORT_DESC])
+            ->all();
+
         return $this->render('index', [
             'entries' => $entries,
+            'promotions' => $promotions,
         ]);
     }
 
@@ -178,12 +199,12 @@ class LeisureController extends Controller
 
     public function actionRequestPasswordReset()
     {
-        $model = new PasswordResetRequestFor();
+        $model = new PasswordResetRequestForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-                return $this->redirect(['leisure/reset-password']);
+                return $this->goHome();
             } else {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset the password for the provided email address.');
             }
@@ -243,62 +264,60 @@ class LeisureController extends Controller
     }
 
     public function actionBook($entry_id)
-{
-    $entry = AdminEntry::findOne($entry_id);
-    if (!$entry) {
-        throw new NotFoundHttpException('Entry not found.');
-    }
-
-    $model = new Booking();
-    $model->entry_id = $entry_id;
-    // If user is guest, set user_id to null; else set logged in user ID
-    $model->user_id = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
-
-    if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        Yii::$app->session->setFlash('success', 'Booking successful!');
-        return $this->redirect(['leisure/index', 'id' => $entry_id]);
-    }
-
-    return $this->render('booking-form', ['model' => $model, 'entry_id' => $entry->id]);
-}
-
-  public function actionBookingForm($entry_id)
-{
-    $model = new Booking();
-    $model->entry_id = $entry_id;
-
-    // 👇 Set user_id from currently logged in user
-    if (!Yii::$app->user->isGuest) {
-        $model->user_id = Yii::$app->user->id;
-    }
-
-    if ($model->load(Yii::$app->request->post())) {
-        if ($model->validate()) {
-            if ($model->save(false)) {
-                Yii::$app->session->setFlash('success', 'Booking submitted successfully.');
-                return $this->redirect(['leisure/index', 'id' => $entry_id]);
-            }
-        } else {
-            Yii::$app->session->setFlash('error', json_encode($model->getErrors()));
+    {
+        $entry = AdminEntry::findOne($entry_id);
+        if (!$entry) {
+            throw new NotFoundHttpException('Entry not found.');
         }
+
+        $model = new Booking();
+        $model->entry_id = $entry_id;
+        $model->user_id = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Booking successful!');
+            return $this->redirect(['leisure/index', 'id' => $entry_id]);
+        }
+
+        return $this->render('booking-form', ['model' => $model, 'entry_id' => $entry->id]);
     }
 
-    return $this->render('booking-form', [
-        'model' => $model,
-        'entry_id' => $entry_id,
-    ]);
-}
-public function actionView($id)
-{
-    $model = AdminEntry::findOne($id); 
-    if (!$model) {
-        throw new \yii\web\NotFoundHttpException('Leisure entry not found.');
+    public function actionBookingForm($entry_id)
+    {
+        $model = new Booking();
+        $model->entry_id = $entry_id;
+
+        if (!Yii::$app->user->isGuest) {
+            $model->user_id = Yii::$app->user->id;
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                if ($model->save(false)) {
+                    Yii::$app->session->setFlash('success', 'Booking submitted successfully.');
+                    return $this->redirect(['leisure/index', 'id' => $entry_id]);
+                }
+            } else {
+                Yii::$app->session->setFlash('error', json_encode($model->getErrors()));
+            }
+        }
+
+        return $this->render('booking-form', [
+            'model' => $model,
+            'entry_id' => $entry_id,
+        ]);
     }
 
-    return $this->render('view', [
-        'model' => $model,
-    ]);
+    public function actionView($id)
+    {
+        $model = AdminEntry::findOne($id); 
+        if (!$model) {
+            throw new \yii\web\NotFoundHttpException('Leisure entry not found.');
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
+    }
 }
 
-
-}

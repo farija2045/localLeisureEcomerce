@@ -1,7 +1,6 @@
 <?php
 namespace app\models;
 
-use app\models\Entry;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -10,9 +9,10 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public static function tableName()
     {
-        return 'user'; 
+        return 'user';
     }
 
+    // ---------- IdentityInterface ----------
     public static function findIdentity($id)
     {
         return static::findOne($id);
@@ -21,16 +21,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return null; // Not used
-    }
-
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username]);
-    }
-
-    public static function findByEmail($email)
-    {
-        return static::findOne(['email' => $email]);
     }
 
     public function getId()
@@ -48,6 +38,18 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->auth_key === $authKey;
     }
 
+    // ---------- Finders ----------
+    public static function findByUsername($username)
+    {
+        return static::findOne(['username' => $username]);
+    }
+
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
+    }
+
+    // ---------- Password Handling ----------
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
@@ -58,16 +60,30 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
+    // ---------- Password Reset ----------
+    public function generatePasswordResetToken()
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    public static function isPasswordResetTokenValid($token)
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'] ?? 3600;
+
+        return $timestamp + $expire >= time();
+    }
+
+    // ---------- Roles ----------
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -78,13 +94,18 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->role === 'user';
     }
 
-    // Optional: define relation to images
+    // ---------- Relations ----------
     public function getImages()
     {
         return $this->hasMany(Image::class, ['user_id' => 'id']);
     }
 
-    // Optional: validation rules
+    public function getEntries()
+    {
+        return $this->hasMany(Entry::class, ['user_id' => 'id']);
+    }
+
+    // ---------- Rules ----------
     public function rules()
     {
         return [
@@ -94,9 +115,4 @@ class User extends ActiveRecord implements IdentityInterface
             ['role', 'in', 'range' => ['admin', 'user']],
         ];
     }
-    public function getEntries()
-{
-    return $this->hasMany(\app\models\Entry::class, ['user_id' => 'id']);
-}
-
 }

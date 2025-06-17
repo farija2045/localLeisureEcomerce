@@ -14,11 +14,12 @@ class Promotion extends ActiveRecord
     public function rules()
     {
         return [
-            [['entry_id', 'title', 'description', 'start_date', 'end_date'], 'required'],
+            [['entry_id', 'title', 'description', 'discount_percent', 'start_date', 'end_date'], 'required'],
             [['entry_id'], 'integer'],
             [['description'], 'string'],
             [['start_date', 'end_date'], 'date', 'format' => 'php:Y-m-d'],
             [['title'], 'string', 'max' => 255],
+            [['discount_percent'], 'number', 'min' => 0, 'max' => 100],
         ];
     }
 
@@ -29,6 +30,7 @@ class Promotion extends ActiveRecord
             'entry_id' => 'Leisure Entry',
             'title' => 'Promotion Title',
             'description' => 'Description',
+            'discount_percent' => 'Discount Percent',
             'start_date' => 'Start Date',
             'end_date' => 'End Date',
         ];

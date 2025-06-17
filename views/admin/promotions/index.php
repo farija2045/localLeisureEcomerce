@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Entry ID</th>
+                     <th>Discount Percent</th>
                     <th>Created At</th>
                     <th>Actions</th>
                 </tr>
@@ -39,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><?= Html::encode($promotion->start_date) ?></td>
                         <td><?= Html::encode($promotion->end_date) ?></td>
                         <td><?= Html::encode($promotion->entry_id) ?></td>
+                        <td><?= Html::encode($promotion->discount_percent) ?>%</td> 
                         <td><?= Yii::$app->formatter->asDatetime($promotion->created_at) ?></td>
                         <td>
                             <?= Html::a('Edit', ['admin/update-promotion', 'id' => $promotion->id], ['class' => 'btn btn-sm btn-primary']) ?>

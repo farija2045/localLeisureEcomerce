@@ -1,25 +1,31 @@
 :root {
     --bs-primary: #2c2c35 !important;
-    --bs-secondary: #43e97b !important;
+    --bs-secondary: #779681 !important;
 }
 
 .btn-primary,
 .bg-primary,
 .text-primary {
-    background-color: #6C63FF !important;
-    border-color: #5a52d6 !important;
+    background-color: #4d4c52 !important;
+    border-color: #d0cfd6 !important;
     color: #fff !important;
 }
 
 body {
-    background: linear-gradient(135deg, #e0e7ff 0%, #c3f8e5 100%);
+   background: url('../images/vie.jpg') no-repeat center center fixed; 
+    /* background: linear-gradient(135deg, #e0e7ff 0%, #c3f8e5 100%); */
     min-height: 100vh;
     background-attachment: fixed;
 }
-
+.text-req{
+    color: #44c508;
+    text-align: center;
+    font-weight: bold;
+    
+}
 /* Cards & Containers */
 .container, .card, .entries-container, .site-request-password-reset {
-    background: rgba(255,255,255,0.85);
+     background: rgba(255, 255, 255, 0.361); 
     border-radius: 16px;
     box-shadow: 0 4px 24px rgba(108,99,255,0.08);
     padding: 24px;
@@ -58,25 +64,10 @@ body {
     box-shadow: 0 2px 12px rgba(108,99,255,0.07);
 }
 
-/* Form Containers */
-/* .leisure-login,
-.leisure-register {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0 auto;
-    max-width: 100%;
-    width: 100%;
-    padding: 36px 28px;
-    background: url('../images/brick-bg.png') no-repeat center center;
-    background-size: cover;
-} */
- /* Background image only for login and register forms */
+
 .leisure-login,
-.leisure-register {
-    background: url('/images/brick-bg.png') no-repeat center center;
+.leisure-register{
+    background: url('../images/brickwall.jpg') no-repeat center center;
     background-size: cover;
     padding: 40px;
     border-radius: 18px;
@@ -86,12 +77,18 @@ body {
     color: #190707; /* Optional: makes text readable on background */
     position: relative;
 }
+.leisure-reset {
+    background: url('../images/brick-bg.jpg') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%;
+    padding: 40px 0;
+}
 
-
-/* Login/Register Inner Forms */
+ /* Login/Register Inner Forms */
 .leisure-login > form,
 .leisure-register > form {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(228, 222, 222, 0.426);
     border-radius: 18px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
     padding: 36px 28px;
@@ -138,7 +135,7 @@ body {
 .entry-frame {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 12px;
-    background: #fff;
+    background: #ffffffcc;
 }
 
 .entry-frame:hover {
@@ -177,4 +174,116 @@ body {
     transform: scale(1.02);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+.booking-wb{
+    background: url('../images/wbg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    
+}
+.book-view{
+     /* background: url('../images/bookview.jpg') no-repeat center center fixed; */
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%;
+}
+.u-form{
+    background: url('../images/upl.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    width: 100%; 
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(121, 118, 118, 0.83);
+}
+form.admin-form {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.admin-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+.admin-form input,
+.admin-form textarea,
+.admin-form select,
+.admin-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.admin-form input:focus,
+.admin-form textarea:focus,
+.admin-form select:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.admin-form button {
+    background-color: #007BFF;
+    color: rgba(255, 255, 255, 0.73);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.admin-form button:hover {
+    background-color: #0056b3;
+}
+.admin-form .image-preview {
+    display: inline-block;
+    margin-top: 10px;
+    max-width: 100px;
+    max-height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+/* Center the form vertically and horizontally */
+.admin-form-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* or set a background if you want */
+}
+
+/* Style the form itself */
+.admin-form {
+    width: 100%;
+    max-width: 800px;
+    padding: 24px;
+    border-radius: 10px;
+    background: #ffffff97;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.promotion-form-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* or set a background if you want */
+}
+
+.promotion-form-box {
+    width: 100%;
+    max-width: 1200px;
+    padding: 80px 50px;
+    border-radius: 50px;
+    background: #ffffff9a;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+.promotion-form-box h1,
+.adminform,
+.promotion-form-box h3 {
+    text-align: center;
 }
