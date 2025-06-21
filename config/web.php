@@ -28,7 +28,12 @@ $config = [
         ],
         'errorHandler' => [
             'errorAction' => 'leisure/error',
+
         ],
+         'formatter' => [
+        'class' => 'yii\i18n\Formatter',
+        'currencyCode' => 'TZS', // or your preferred currency, e.g. 'TZS'
+    ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',

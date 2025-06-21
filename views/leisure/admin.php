@@ -32,6 +32,11 @@ $this->registerCssFile('@web/css/custom.css');
     <?= $form->field($model, 'image_url')->textInput(['maxlength' => true, 'placeholder' => 'Enter image URL']) ?>
 
     <?= $form->field($model, 'images[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
+    <?= $form->field($model, 'price')->input('number', [
+    'step' => '0.01',
+    'min' => '0',
+    'placeholder' => 'Enter price for this place'
+]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>

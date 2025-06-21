@@ -67,6 +67,31 @@ $this->title = 'LOCAL LEISURE FINDER SYSTEM';
                                 </p>
                             <?php endif; ?>
 
+                            <!-- Show Price Toast Button -->
+                            <button type="button" class="btn btn-danger" onclick="showPriceToast<?= $entry->id ?>()">
+                                <i class="bi bi-heart-fill"></i> Show Price
+                            </button>
+
+                            <!-- Toast for Price -->
+                            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+                                <div id="priceToast<?= $entry->id ?>" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                    <div class="d-flex">
+                                        <div class="toast-body">
+                                            <strong>Price:</strong> <?= Yii::$app->formatter->asCurrency($entry->price) ?>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                            function showPriceToast<?= $entry->id ?>() {
+                                var toastEl = document.getElementById('priceToast<?= $entry->id ?>');
+                                var toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                                toast.show();
+                            }
+                            </script>
+
                             <!-- Existing View Details button -->
                             <a href="<?= Url::to(['leisure/image', 'id' => $entry->id]) ?>" class="btn btn-primary">View Details</a>
 

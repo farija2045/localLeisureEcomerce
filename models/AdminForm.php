@@ -16,16 +16,18 @@ class AdminForm extends Model
     public $imageFile;
     public $imagePath;
     public $imageUrl;
+    public $price;
 
     public function rules()
     {
         return [
-            [['title', 'description', 'type', 'date'], 'required'],
+            [['title', 'description', 'type', 'date', 'location', 'price'], 'required'],
             [['description'], 'string'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
             [['title', 'type', 'location'], 'string', 'max' => 255],
             [['imageFile'], 'image', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2],
             [['imageUrl'], 'url'],
+            [['price'], 'number', 'min' => 0],
         ];
     }
 
@@ -61,6 +63,7 @@ class AdminForm extends Model
                 'location' => $this->location,
                 'image_path' => $this->imagePath ?? null,
                 'image_url' => $this->imageUrl ?? null,
+                'price' => $this->price ,
             ])->execute();
 
             return true;

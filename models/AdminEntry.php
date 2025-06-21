@@ -58,6 +58,7 @@ class AdminEntry extends \yii\db\ActiveRecord
             [['images'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxFiles' => 10], // Allow up to 10 files
             [['user_id'], 'integer'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['price'], 'number', 'min' => 0, 'max' => 1000000, 'message' => 'Price must be between 0 and 1,000,000'],
         ];
     }
 
@@ -77,6 +78,7 @@ class AdminEntry extends \yii\db\ActiveRecord
             'image_url' => 'Image URL',
             'images' => 'Images',
             'user_id' => 'User',
+            'price' => 'Price',
         ];
     }
 
